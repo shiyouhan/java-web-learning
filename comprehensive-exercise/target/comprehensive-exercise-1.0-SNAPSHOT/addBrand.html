@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>异步请求，添加品牌</title>
+    <link href="style.css" rel="stylesheet">
+    <style>
+        table {
+            border: 1px solid #ccc;
+        }
+
+        table td {
+            border: none;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<form class="bootstrap-frm" method="post">
+    <h1>添加品牌
+        <span>请输入品牌内容！</span>
+    </h1>
+    <label for="brandName">
+        <span>品牌名称:</span>
+        <input type="text" name="brandName" value="" id="brandName"/>
+    </label>
+    <label for="companyName">
+        <span>企业名称:</span>
+        <input type="text" name="companyName" value="" id="companyName"/>
+    </label>
+    <label for="ordered">
+        <span>排序:</span>
+        <input type="number" name="ordered" value="" id="ordered"/>
+    </label>
+    <label for="description">
+        <span>描述信息:</span>
+        <textarea rows="5" cols="20" name="description" id="description"></textarea>
+    </label>
+    <label>
+        <span>状态:</span>
+        <select>
+            <option name="status" value="0">禁用</option>
+            <option name="status" value="1" checked>启用</option>
+        </select>
+    </label>
+    <label>
+        <span>&nbsp;</span>
+        <input type="submit" class="button" value="提交" id="btn"/>
+    </label>
+</form>
+
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    //1. 给按钮绑定单击事件
+    document.getElementById("btn").onclick = function () {
+        // 2. 定义表单数据对象
+        let formData = {
+            brandName: "",
+            companyName: "",
+            ordered: "",
+            description: "",
+            status: "",
+        };
+        // 3. 获取表单输入的数据，并设置给formData
+        formData.brandName = document.getElementById("brandName").value;
+        formData.companyName = document.getElementById("companyName").value;
+        formData.ordered = document.getElementById("ordered").value;
+        formData.description = document.getElementById("description").value;
+
+        // 4. 获取所有的单选按钮，遍历找到被选中的
+        let status = document.getElementsByName("status");
+        for (let i = 0; i < status.length; i++) {
+            if (status[i].checked) {
+                formData.status = status[i].value;
+            }
+        }
+        console.log(formData);
+        //5. 发送ajax请求
+        axios({
+            method: "post",
+            url: "http://localhost:9090/newBrand",
+            data: formData
+        }).then(function (resp) {
+            // 判断响应数据是否为 success
+            if (resp.data === "success") {
+                // 跳到品牌列表页，重新请求书记
+                location.href = "http://localhost:9090/brand.html";
+            }
+        })
+    }
+</script>
+</body>
+</html>
